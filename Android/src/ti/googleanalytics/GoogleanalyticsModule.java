@@ -13,6 +13,7 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
 
 import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.GAServiceManager;
 import com.google.analytics.tracking.android.Logger.LogLevel;
 
 @Kroll.module(name = "Googleanalytics", id = "ti.googleanalytics")
@@ -23,7 +24,7 @@ public class GoogleanalyticsModule extends KrollModule {
 	@Kroll.constant public static final int LOG_WARNING = 2;
 	@Kroll.constant public static final int LOG_INFO = 3;
 	@Kroll.constant public static final int LOG_VERBOSE = 3;
-	
+
 	private GoogleAnalytics instance() {
 		return GoogleAnalytics.getInstance(TiApplication.getInstance().getApplicationContext());
 	}
@@ -92,25 +93,29 @@ public class GoogleanalyticsModule extends KrollModule {
 	public FieldsProxy getFields() {
 		return new FieldsProxy();
 	}
-	
+
 	private LogLevel convertToLog(int value){
 		if(value ==LOG_WARNING){
-			return LogLevel.WARNING;			
+			return LogLevel.WARNING;
 		}
 		if(value ==LOG_INFO){
-			return LogLevel.INFO;			
-		}			
+			return LogLevel.INFO;
+		}
 		if(value ==LOG_VERBOSE){
-			return LogLevel.VERBOSE;			
-		}		
+			return LogLevel.VERBOSE;
+		}
 		return LogLevel.ERROR;
 	}
 
-	
+
 	@Kroll.method
 	public void setLogLevel(int value)
 	{
 		instance().getLogger().setLogLevel(convertToLog(value));
 	}
 
+	@Kroll.method
+	public void setLocalDispatchPeriod(int seconds) {
+		GAServiceManager.getInstance().setLocalDispatchPeriod(seconds);
+	}
 }
